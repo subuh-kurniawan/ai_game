@@ -1,48 +1,73 @@
 <?php
+// 1. Include and check connection
+include "admin/fungsi/koneksi.php";
 
-include "../admin/fungsi/koneksi.php";
-$sql = mysqli_query($koneksi, "SELECT * FROM datasekolah");
-$data = mysqli_fetch_assoc($sql);
-$sql = mysqli_query($koneksi, "
-    SELECT api_key
-    FROM api_keys
-    WHERE usage_count = (SELECT MIN(usage_count) FROM api_keys)
-    ORDER BY RAND()
-    LIMIT 1
-");
-
-if (!$sql) {
-    die("Error fetching API key: " . mysqli_error($koneksi));
+/** @var mysqli $koneksi */
+if (!$koneksi) {
+    die("Database connection error.");
 }
 
-$dataApiKey = mysqli_fetch_assoc($sql);
+// Set charset to ensure emojis and special characters work
+mysqli_set_charset($koneksi, "utf8mb4");
 
-if ($dataApiKey) {
-    $apiKey = $dataApiKey['api_key'];
-} else {
-    die("No API keys found in the database.");
+$apiKey = null;
+$apiId  = null;
+
+// --- 1. Select API Key with Atomic Transaction ---
+$koneksi->begin_transaction();
+
+try {
+    // Select the key with the lowest usage and lock the row (FOR UPDATE)
+    $query = "SELECT id, api_key FROM api_keys ORDER BY usage_count ASC, id ASC LIMIT 1 FOR UPDATE";
+    $result = $koneksi->query($query);
+
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $apiKey = $row['api_key'];
+        $apiId  = $row['id'];
+
+        // Update usage_count inside the lock
+        $update = $koneksi->prepare("UPDATE api_keys SET usage_count = usage_count + 1 WHERE id = ?");
+        if ($update) {
+            $update->bind_param("i", $apiId);
+            $update->execute();
+            $update->close();
+        }
+    }
+
+    $koneksi->commit();
+} catch (Exception $e) {
+    // If something fails, rollback so the lock is released
+    $koneksi->rollback();
+    error_log("API Key Selection Error: " . $e->getMessage());
 }
+
+// --- 2. Fallback Mechanism ---
+// Use a secure fallback if DB is empty or fails
+if (!$apiKey) {
+    $apiKey = "AIzaSyAYYBCPplYs1pd3vqu5e13YsbF1hgQz8EY"; // Note: Move to .env for security
+}
+
+$apiKeyJson = json_encode([$apiKey]);
+
+// --- 3. Fetch Supported Models ---
 $models = [];
+$sql_model = "SELECT model_name FROM api_model 
+              WHERE is_supported = 1 
+              AND is_active = 1 
+              AND guna_model = 2 
+              ORDER BY id ASC";
 
-$sql = "SELECT model_name 
-        FROM api_model 
-        WHERE is_supported = 1 
-        ORDER BY id ASC";
+$res_model = $koneksi->query($sql_model);
 
-$res = $koneksi->query($sql);
-
-while ($row = $res->fetch_assoc()) {
-    $models[] = $row['model_name'];
+if ($res_model && $res_model->num_rows > 0) {
+    while ($row = $res_model->fetch_assoc()) {
+        $models[] = $row['model_name'];
+    }
 }
 
-// Fallback jika database kosong atau tidak ada model yang didukung
-if (empty($models)) {
-    $models[] = "gemini-2.5-flash";
-}
-
-// Pilih model pertama / default
-$model = $models[0];
-
+// Default to gemini-1.5-flash if no active models in DB
+$model = !empty($models) ? $models[0] : "gemini-1.5-flash";
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -301,9 +326,9 @@ $model = $models[0];
 
 <script type="module">
     // --- Konfigurasi Gemini API dan Game State ---
-    const API_KEY = "<?php echo $apiKey; ?>"; // Kunci API akan disediakan oleh lingkungan Canvas
-    const md = "<?php echo $model; ?>";
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${md}:generateContent?key=${API_KEY}`;
+    const API_KEY = <?php echo $apiKeyJson; ?>; // Kunci API akan disediakan oleh lingkungan Canvas
+    const md =  <?php echo json_encode($model); ?>;
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${keys[0]}`;
     
     // FUNGSI BARU: Menentukan jumlah skenario berdasarkan level kesulitan
     function getDynamicMaxScenarios(level) {
