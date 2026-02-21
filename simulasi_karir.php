@@ -45,7 +45,7 @@ try {
 // --- 2. Fallback Mechanism ---
 // Use a secure fallback if DB is empty or fails
 if (!$apiKey) {
-    $apiKey = "AIzaSyAYYBCPplYs1pd3vqu5e13YsbF1hgQz8EY"; // Note: Move to .env for security
+    $apiKey = "APIKEY"; // Note: Move to .env for security
 }
 
 $apiKeyJson = json_encode([$apiKey]);
