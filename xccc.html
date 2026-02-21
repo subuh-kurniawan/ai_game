@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Game Sejarah - Proklamasi Kemerdekaan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-yellow-100 text-yellow-900 font-serif min-h-screen flex flex-col items-center p-6">
+
+  <div id="gameContainer" class="bg-white border-8 border-yellow-800 rounded-lg shadow-lg max-w-4xl w-full p-6 flex flex-col items-center">
+    <h1 class="text-3xl font-bold text-red-900 mb-6 text-center drop-shadow-md">Game Sejarah: Detik-Detik Proklamasi</h1>
+
+    <div id="narasi" class="text-lg leading-relaxed mb-6 max-w-3xl"></div>
+    
+    <div id="imageContainer" class="mb-6 w-full max-w-3xl flex justify-center">
+      <img id="sceneImage" src="" alt="Gambar Scene" class="rounded-md shadow-md max-h-64 object-contain" />
+    </div>
+
+    <div id="options" class="w-full max-w-3xl flex flex-col gap-4"></div>
+
+    <div id="loading" class="text-center text-red-900 text-lg font-semibold mt-4 hidden">Memuat narasi dari sejarah...</div>
+  </div>
+
+  <script>
+    let gameData = null;
+    let currentScene = "start";
+    let utterance = null; // menyimpan utterance saat ini supaya bisa dibatalkan
+
+    const narasiDiv = document.getElementById("narasi");
+    const imgElement = document.getElementById("sceneImage");
+    const optionsDiv = document.getElementById("options");
+    const loadingDiv = document.getElementById("loading");
+
+    async function fetchGameData() {
+      loadingDiv.classList.remove("hidden");
+      try {
+        const response = await fetch("gameData.json");
+        if (!response.ok) throw new Error("Gagal memuat data JSON");
+        gameData = await response.json();
+        loadScene(currentScene);
+      } catch (error) {
+        narasiDiv.textContent = "Error memuat data: " + error.message;
+        imgElement.src = "";
+        optionsDiv.innerHTML = "";
+      }
+      loadingDiv.classList.add("hidden");
+    }
+
+    function speakText(text) {
+      if (speechSynthesis.speaking) {
+        speechSynthesis.cancel(); // Hentikan suara yang sedang berjalan
+      }
+
+      utterance = new SpeechSynthesisUtterance(text);
+      
+      const setVoiceAndSpeak = () => {
+        const voices = speechSynthesis.getVoices();
+        // Cari suara Bahasa Indonesia, preferensi suara Google
+        const indoVoice = voices.find(v => v.lang === 'id-ID' && v.name.includes("Google")) 
+                          || voices.find(v => v.lang === 'id-ID');
+        if (indoVoice) utterance.voice = indoVoice;
+        speechSynthesis.speak(utterance);
+      };
+
+      if (speechSynthesis.getVoices().length > 0) {
+        setVoiceAndSpeak();
+      } else {
+        speechSynthesis.onvoiceschanged = setVoiceAndSpeak;
+      }
+    }
+
+    function loadScene(sceneKey) {
+      const scene = gameData.scenes[sceneKey];
+      if (!scene) {
+        narasiDiv.textContent = "Error: Scene tidak ditemukan.";
+        imgElement.src = "";
+        optionsDiv.innerHTML = "";
+        return;
+      }
+
+      currentScene = sceneKey;
+
+      narasiDiv.textContent = scene.narasi;
+
+      if (scene.image) {
+        imgElement.src = scene.image;
+        imgElement.alt = "Gambar scene " + sceneKey;
+        imgElement.classList.remove("hidden");
+      } else {
+        imgElement.classList.add("hidden");
+        imgElement.src = "";
+      }
+
+      optionsDiv.innerHTML = "";
+
+      if (scene.opsi.length === 0) {
+        optionsDiv.innerHTML = `<p class="text-center font-semibold text-green-700">[Akhir cerita. Terima kasih telah bermain!]</p>`;
+      } else {
+        scene.opsi.forEach(option => {
+          const btn = document.createElement("button");
+          btn.textContent = option.text;
+          btn.className = "bg-red-700 hover:bg-red-900 text-yellow-100 rounded-md py-2 px-4 text-left shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400";
+          btn.onclick = () => loadScene(option.next);
+          optionsDiv.appendChild(btn);
+        });
+      }
+
+      // Mulai TTS membaca narasi setiap kali scene dimuat
+      speakText(scene.narasi);
+    }
+
+    // Mulai load data saat halaman siap
+    fetchGameData();
+  </script>
+
+</body>
+</html>

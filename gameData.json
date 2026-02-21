@@ -1,0 +1,149 @@
+{
+  "scenes": {
+    "start": {
+      "narasi": "Jakarta, Agustus 1945. Jepang baru saja menyerah tanpa syarat. Kota penuh ketegangan dan harapan. Para pemuda berkumpul, mendesak proklamasi kemerdekaan segera dilakukan, sementara tokoh-tokoh tua seperti Sukarno dan Hatta ingin berhati-hati dan berdiskusi lebih dulu.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/2/29/ProklamasiKemerdekaan.jpg",
+      "opsi": [
+        {"text": "Ajak Sukarno dan Hatta segera memproklamasikan kemerdekaan", "next": "ajak_sukarno"},
+        {"text": "Tunggu perintah Sekutu sebelum bertindak", "next": "tunggu_sekutu"},
+        {"text": "Kumpulkan semua tokoh untuk diskusi lebih lanjut", "next": "diskusi_tokoh"}
+      ]
+    },
+    "ajak_sukarno": {
+      "narasi": "Para pemuda dengan penuh semangat mengajak Sukarno dan Hatta untuk segera memproklamasikan kemerdekaan. Setelah perdebatan singkat, Sukarno dan Hatta setuju. Persiapan dimulai, termasuk penulisan naskah proklamasi yang akan dibacakan nanti.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/81/Sukarno-Hatta_Proklamasi.jpg",
+      "opsi": [
+        {"text": "Tuliskan naskah proklamasi bersama", "next": "tulis_naskah"},
+        {"text": "Minta bantuan penjahit membuat bendera merah putih", "next": "penjahit_bendera"},
+        {"text": "Beritahu rakyat melalui radio tentang proklamasi", "next": "beritahu_rakyat"}
+      ]
+    },
+    "tunggu_sekutu": {
+      "narasi": "Menunggu perintah dari Sekutu membuat waktu berjalan dengan lambat. Para pemuda merasa gelisah karena situasi semakin genting dan kekuatan Belanda mulai bergerak kembali ke Indonesia.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Arrival_of_Dutch_Troops_in_Indonesia_1946.jpg",
+      "opsi": [
+        {"text": "Akhiri penundaan dan proklamasikan kemerdekaan sendiri", "next": "ajak_sukarno"},
+        {"text": "Terus bersabar dan menunggu perintah resmi", "next": "tunggu_sekutu_2"},
+        {"text": "Menghubungi pihak Sekutu untuk klarifikasi", "next": "hubungi_sekutu"}
+      ]
+    },
+    "diskusi_tokoh": {
+      "narasi": "Diskusi panjang dengan berbagai tokoh terjadi. Ada ketegangan antara keinginan cepat dan kehati-hatian. Namun, waktu terus berjalan dan tekanan semakin besar dari para pemuda yang ingin segera bertindak.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Preparations_for_Proclamation_of_Independence.jpg",
+      "opsi": [
+        {"text": "Putuskan segera memproklamasikan kemerdekaan", "next": "ajak_sukarno"},
+        {"text": "Tunda dan buat strategi baru", "next": "tunda_strategi"},
+        {"text": "Minta bantuan militer Jepang", "next": "minta_bantuan_jepang"}
+      ]
+    },
+    "tulis_naskah": {
+      "narasi": "Sukarno dan Hatta bersama para pemuda menulis naskah proklamasi dengan penuh semangat dan tekad. Teks tersebut mengandung kata-kata sakral yang akan menjadi dasar kemerdekaan bangsa Indonesia.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/00/Teks_Proklamasi_1945.jpg",
+      "opsi": [
+        {"text": "Bacakan naskah proklamasi di depan rakyat", "next": "bacakan_proklamasi"},
+        {"text": "Simpan naskah dan tunggu waktu yang tepat", "next": "tunggu_waktu"},
+        {"text": "Minta persetujuan tokoh lain terlebih dahulu", "next": "minta_persetujuan"}
+      ]
+    },
+    "penjahit_bendera": {
+      "narasi": "Sementara naskah sedang disiapkan, seorang penjahit terampil membuat bendera merah putih yang akan dikibarkan pada hari bersejarah itu. Bendera itu dijahit dengan penuh cinta dan harapan.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/07/Indonesian_flag_being_sewn.jpg",
+      "opsi": [
+        {"text": "Percepat pembuatan bendera untuk upacara", "next": "tulis_naskah"},
+        {"text": "Minta bantuan lebih banyak penjahit", "next": "minta_bantuan_penjahit"},
+        {"text": "Serahkan bendera ke Sukarno dan Hatta", "next": "serahkan_bendera"}
+      ]
+    },
+    "beritahu_rakyat": {
+      "narasi": "Informasi tentang proklamasi mulai disebarkan melalui radio dan selebaran, membangkitkan semangat rakyat yang selama ini tertindas oleh penjajah.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Radio_Broadcast_Indonesia.jpg",
+      "opsi": [
+        {"text": "Siapkan upacara kemerdekaan", "next": "siapkan_upacara"},
+        {"text": "Konsolidasi milisi untuk pengamanan", "next": "konsolidasi_milisi"},
+        {"text": "Berkoordinasi dengan tokoh militer", "next": "koordinasi_militer"}
+      ]
+    },
+    "bacakan_proklamasi": {
+      "narasi": "Pada tanggal 17 Agustus 1945, Sukarno membacakan teks proklamasi kemerdekaan di depan rumahnya di Jalan Pegangsaan Timur. Suara penuh semangat membahana, menggetarkan jiwa bangsa.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Proklamasi_17_Agustus_1945.jpg",
+      "opsi": []
+    },
+    "tunggu_sekutu_2": {
+      "narasi": "Kesabaran terus diuji, namun akhirnya para pemuda mengambil keputusan untuk bertindak sendiri demi masa depan bangsa.",
+      "image": "",
+      "opsi": [
+        {"text": "Ajak Sukarno dan Hatta segera memproklamasikan kemerdekaan", "next": "ajak_sukarno"}
+      ]
+    },
+    "hubungi_sekutu": {
+      "narasi": "Usaha menghubungi pihak Sekutu gagal karena situasi kacau. Waktu terus berjalan dan ancaman kembalinya penjajah semakin nyata.",
+      "image": "",
+      "opsi": [
+        {"text": "Akhiri penundaan dan proklamasikan kemerdekaan sendiri", "next": "ajak_sukarno"}
+      ]
+    },
+    "tunda_strategi": {
+      "narasi": "Penundaan strategi menyebabkan kebingungan di antara para pendukung kemerdekaan. Waktu berharga terbuang sia-sia.",
+      "image": "",
+      "opsi": [
+        {"text": "Putuskan untuk segera memproklamasikan kemerdekaan", "next": "ajak_sukarno"}
+      ]
+    },
+    "minta_bantuan_jepang": {
+      "narasi": "Minta bantuan militer Jepang tidak membuahkan hasil karena mereka sudah menyerah dan tidak berdaya.",
+      "image": "",
+      "opsi": [
+        {"text": "Putuskan untuk segera memproklamasikan kemerdekaan", "next": "ajak_sukarno"}
+      ]
+    },
+    "minta_bantuan_penjahit": {
+      "narasi": "Penjahit lain pun bergabung membantu mempercepat pembuatan bendera merah putih yang akan menjadi simbol perjuangan bangsa.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/07/Indonesian_flag_being_sewn.jpg",
+      "opsi": [
+        {"text": "Serahkan bendera ke Sukarno dan Hatta", "next": "serahkan_bendera"}
+      ]
+    },
+    "serahkan_bendera": {
+      "narasi": "Bendera merah putih selesai dijahit dan diserahkan kepada Sukarno dan Hatta sebagai simbol kemerdekaan yang akan segera diumumkan.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/81/Sukarno-Hatta_Proklamasi.jpg",
+      "opsi": [
+        {"text": "Tuliskan naskah proklamasi bersama", "next": "tulis_naskah"}
+      ]
+    },
+    "siapkan_upacara": {
+      "narasi": "Semua persiapan untuk upacara kemerdekaan berjalan dengan baik. Rakyat mulai berkumpul dengan penuh semangat.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Proklamasi_17_Agustus_1945.jpg",
+      "opsi": [
+        {"text": "Bacakan naskah proklamasi", "next": "bacakan_proklamasi"}
+      ]
+    },
+    "konsolidasi_milisi": {
+      "narasi": "Milisi rakyat bersiap mengamankan proklamasi agar berlangsung dengan lancar tanpa gangguan musuh.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Indonesian_Militia.jpg",
+      "opsi": [
+        {"text": "Siapkan upacara kemerdekaan", "next": "siapkan_upacara"}
+      ]
+    },
+    "koordinasi_militer": {
+      "narasi": "Tokoh militer berkoordinasi untuk mendukung kemerdekaan dengan menjaga keamanan kota dan rakyat.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/7/70/Indonesian_military_officers_1945.jpg",
+      "opsi": [
+        {"text": "Siapkan upacara kemerdekaan", "next": "siapkan_upacara"}
+      ]
+    },
+    "tunggu_waktu": {
+      "narasi": "Menunggu waktu yang tepat malah membuat kesempatan berlalu begitu saja. Saatnya bertindak sekarang!",
+      "image": "",
+      "opsi": [
+        {"text": "Bacakan naskah proklamasi di depan rakyat", "next": "bacakan_proklamasi"}
+      ]
+    },
+    "minta_persetujuan": {
+      "narasi": "Mencari persetujuan tokoh lain memakan waktu dan semangat rakyat mulai pudar. Kemerdekaan harus segera diumumkan!",
+      "image": "",
+      "opsi": [
+        {"text": "Bacakan naskah proklamasi tanpa penundaan", "next": "bacakan_proklamasi"}
+      ]
+    }
+  }
+}
