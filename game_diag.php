@@ -1,4 +1,74 @@
+<?php
+// 1. Include and check connection
+include "admin/fungsi/koneksi.php";
 
+/** @var mysqli $koneksi */
+if (!$koneksi) {
+    die("Database connection error.");
+}
+
+// Set charset to ensure emojis and special characters work
+mysqli_set_charset($koneksi, "utf8mb4");
+
+$apiKey = null;
+$apiId  = null;
+
+// --- 1. Select API Key with Atomic Transaction ---
+$koneksi->begin_transaction();
+
+try {
+    // Select the key with the lowest usage and lock the row (FOR UPDATE)
+    $query = "SELECT id, api_key FROM api_keys ORDER BY usage_count ASC, id ASC LIMIT 1 FOR UPDATE";
+    $result = $koneksi->query($query);
+
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $apiKey = $row['api_key'];
+        $apiId  = $row['id'];
+
+        // Update usage_count inside the lock
+        $update = $koneksi->prepare("UPDATE api_keys SET usage_count = usage_count + 1 WHERE id = ?");
+        if ($update) {
+            $update->bind_param("i", $apiId);
+            $update->execute();
+            $update->close();
+        }
+    }
+
+    $koneksi->commit();
+} catch (Exception $e) {
+    // If something fails, rollback so the lock is released
+    $koneksi->rollback();
+    error_log("API Key Selection Error: " . $e->getMessage());
+}
+
+// --- 2. Fallback Mechanism ---
+// Use a secure fallback if DB is empty or fails
+if (!$apiKey) {
+    $apiKey = "APIKEY"; // Note: Move to .env for security
+}
+
+$apiKeyJson = json_encode([$apiKey]);
+
+// --- 3. Fetch Supported Models ---
+$models = [];
+$sql_model = "SELECT model_name FROM api_model 
+              WHERE is_supported = 1 
+              AND is_active = 1 
+              AND guna_model = 2 
+              ORDER BY id ASC";
+
+$res_model = $koneksi->query($sql_model);
+
+if ($res_model && $res_model->num_rows > 0) {
+    while ($row = $res_model->fetch_assoc()) {
+        $models[] = $row['model_name'];
+    }
+}
+
+// Default to gemini-1.5-flash if no active models in DB
+$model = !empty($models) ? $models[0] : "gemini-1.5-flash";
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -134,8 +204,9 @@
     <script>
         // ==================== Gemini API Configuration ====================
         // PENTING: Kunci API diatur sebagai string kosong ("") agar sistem runtime dapat menginjeksikan kunci yang valid.
-        const apiKey = "<?php echo $apiKey; ?>";
-        const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent";
+        const API_KEY = <?php echo $apiKeyJson; ?>; // Kunci API akan disediakan oleh lingkungan Canvas
+    const md =  <?php echo json_encode($model); ?>;
+        const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent";
 
         // Structured JSON schema for reliable output
         const responseSchema = {
